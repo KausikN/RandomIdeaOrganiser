@@ -9,6 +9,8 @@ public class AddIdea_UIController : MonoBehaviour
 
     string storage_path = "";
 
+    GameObject mainpanel;
+
     Button AddIdea_Button;
     InputField IdeaName_InputField;
     Slider IdeaDiff_Slider;
@@ -22,7 +24,7 @@ public class AddIdea_UIController : MonoBehaviour
     float ideadiff;
 
     string ideadesc;
-
+    /*
     public class Ideas
     {
         public string[] names;
@@ -31,6 +33,10 @@ public class AddIdea_UIController : MonoBehaviour
     };
 
     Ideas ideas = null;
+    */
+    string[] allFGtext = { "Title", "IdeaName_Text", "IdeaDiff_Text", "IdeaDesc_Text", "CustomFileLoc_Label", "Saved_Text" };
+    //string[] allBG = { "Main" };
+
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +49,8 @@ public class AddIdea_UIController : MonoBehaviour
         }
         else GameObject.Find("Platform_Text").GetComponent<Text>().text = "Platform - Windows";
 
+        mainpanel = GameObject.Find("Main");
+
         IdeaName_InputField = GameObject.Find("IdeaName_InputField").GetComponent<InputField>();
         IdeaDiff_Slider = GameObject.Find("IdeaDiff_Slider").GetComponent<Slider>();
         IdeaDesc_InputField = GameObject.Find("IdeaDesc_InputField").GetComponent<InputField>();
@@ -52,12 +60,55 @@ public class AddIdea_UIController : MonoBehaviour
 
         AddIdea_Button = GameObject.Find("AddIdea_Button").GetComponent<Button>();
         AddIdea_Button.onClick.AddListener(AddIdea);
+
+        GameObject.Find("Black_White").GetComponent<Button>().onClick.AddListener(Black_White);
+        GameObject.Find("Black_Cyan").GetComponent<Button>().onClick.AddListener(Black_Cyan);
+        GameObject.Find("White_Black").GetComponent<Button>().onClick.AddListener(White_Black);
+        GameObject.Find("White_Red").GetComponent<Button>().onClick.AddListener(White_Red);
+        GameObject.Find("ImageBG").GetComponent<Button>().onClick.AddListener(ImageBG);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void Black_White()
+    {
+        ChangeColors(Color.black, Color.white);
+    }
+    void Black_Cyan()
+    {
+        ChangeColors(Color.black, Color.cyan);
+    }
+    void White_Black()
+    {
+        ChangeColors(Color.white, Color.black);
+    }
+    void White_Red()
+    {
+        ChangeColors(Color.white, Color.red);
+    }
+    void ImageBG()
+    {
+        Color tempc = Color.white;
+        tempc.a = 0.5f;
+        mainpanel.GetComponent<Image>().color = tempc;
+        foreach (string f in allFGtext)
+        {
+            GameObject.Find(f).GetComponent<Text>().color = Color.blue;
+        }
+    }
+
+    void ChangeColors(Color bg, Color fg)
+    {
+        foreach (string f in allFGtext)
+        {
+            GameObject.Find(f).GetComponent<Text>().color = fg;
+        }
+        bg.a = 1f;
+        mainpanel.GetComponent<Image>().color = bg;
     }
 
     void AddIdea()
@@ -105,6 +156,8 @@ public class AddIdea_UIController : MonoBehaviour
         }
 
         File.WriteAllLines(Path.Combine(storage_path, "Ideas", ideaname + ".txt"), contents);
+
+        GameObject.Find("Saved_Text").GetComponent<Text>().text = ideaname + " added!";
 
         Debug.Log("Contents written to File: " + Path.Combine(storage_path, "Ideas", ideaname + ".txt"));
     }
